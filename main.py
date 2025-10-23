@@ -20,7 +20,7 @@ def pdfToRawLatex(pdfFilePath):
     )
     rawLatex = []
     for pdfPage in pdfDocument:
-        print(f"<=== #{pdfPage.number + 1} ===>")
+        # print(f"<=== #{pdfPage.number + 1} ===>")
         currentPixmap = pdfPage.get_pixmap(matrix=pixmapScale)
         # currentPixmap.save("image.jpeg")
         currentImage = currentPixmap.pil_tobytes("JPEG")
@@ -29,7 +29,7 @@ def pdfToRawLatex(pdfFilePath):
             input_type="image",
         )
         rawLatex.append(nougatOcrResult.outputs[0].data.text.raw)
-        print(nougatOcrResult.outputs[0].data.text.raw)
+        # print(nougatOcrResult.outputs[0].data.text.raw)
 
     pdfDocument.close()
     return rawLatex
@@ -44,7 +44,9 @@ def pdfToRawLatex(pdfFilePath):
 def main():
     filePath = "./assets/test/latex-test-1page.pdf"
     rawLatex = pdfToRawLatex(filePath)
-    print(rawLatex)
+    for index in range(len(rawLatex)):
+        print(f"<=== #{index} ===>")
+        print(rawLatex[index])
 
 
 if __name__ == "__main__":
