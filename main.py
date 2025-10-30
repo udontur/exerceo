@@ -129,9 +129,7 @@ class LLMs:
         # This is a JSON formatted string
         return response.choices[0].message.content
 
-    async def imageToLatex(
-        image,
-    ):
+    async def imageToLatex(image):
         print("CALLING CLARIFAI")
         # TODO Make Clarifai API Async predict by bytes
         nougatOcrResult = await nougatEngine.predict_by_bytes(
