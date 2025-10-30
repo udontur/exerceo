@@ -10,6 +10,7 @@ import asyncio
 from clarifai.client.model import Model
 from openai import AsyncOpenAI
 
+
 def init_environment():
     load_dotenv()
     global nougatEngine
@@ -25,6 +26,7 @@ def init_environment():
     global pixmapScale
     pixmapScale = pymupdf.Matrix(2.5, 2.5)
 
+
 class Converter:
     @staticmethod
     # Turns pdf into a JPEG list
@@ -34,7 +36,7 @@ class Converter:
             stream=pdfBinary,
             filetype="pdf",
         )
-        
+
         imageList = []
         for pdfPage in pdfDocument:
             currentPixmap = pdfPage.get_pixmap(matrix=pixmapScale)
@@ -47,9 +49,7 @@ class Converter:
     async def imagesToLatex(imageList):
         coros = []
         for image in imageList:
-            coro = LLMs.imageToLatex(
-                image=image
-            )
+            coro = LLMs.imageToLatex(image=image)
             coros.append(coro)
         return await asyncio.gather(*coros)
 
@@ -67,6 +67,7 @@ class Converter:
             index += k
         return result
 
+
 class Debugger:
     @staticmethod
     def printList(elements, tag):
@@ -75,6 +76,7 @@ class Debugger:
             print(f"<=== #{index + 1} ===>")
             print(elements[index])
         print(f"[DEBUG] <{tag}> finished!")
+
 
 class LLMs:
     questionExtractPrompt = """
@@ -110,7 +112,7 @@ class LLMs:
 
         **Input Text to Parse**:
     """
-    
+
     @staticmethod
     async def promptResponse(systemPrompt, userPrompt):
         prompt = [
@@ -127,15 +129,18 @@ class LLMs:
         # This is a JSON formatted string
         return response.choices[0].message.content
 
-    async def imageToLatex(image, ):
+    async def imageToLatex(
+        image,
+    ):
         print("CALLING CLARIFAI")
-        # CLARIFAI NO ASYNC_PREDICT_BY_BYTES
+        # TODO Make Clarifai API Async predict by bytes
         nougatOcrResult = await nougatEngine.predict_by_bytes(
             input_bytes=image,
             input_type="image",
         )
         print("SUCCESSFUL")
         return nougatOcrResult.outputs[0].data.text.raw
+
 
 async def extractRawLatex(rawLatexList):
     coros = []
@@ -145,6 +150,7 @@ async def extractRawLatex(rawLatexList):
         )
         coros.append(coro)
     return await asyncio.gather(*coros)
+
 
 async def main():
     filePath = "./assets/test/latex-test-1.pdf"
