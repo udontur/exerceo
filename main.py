@@ -7,19 +7,20 @@ import json
 import asyncio
 
 # AI Stuff
-from clarifai.client.model import Model
-from openai import AsyncOpenAI
-
+import clarifai.client.model
+import openai
 
 def init_environment():
     load_dotenv()
+    # Nougat (Clarifai)
     global nougatEngine
-    nougatEngine = Model(
+    nougatEngine = clarifai.client.model.Model(
         url=os.getenv("NOUGAT_API_BASE"),
         pat=os.getenv("NOUGAT_API_KEY"),
     )
+    # DeepSeek
     global genericLLMClient
-    genericLLMClient = AsyncOpenAI(
+    genericLLMClient = openai.AsyncOpenAI(
         base_url=os.getenv("LLM_API_BASE"),
         api_key=os.getenv("LLM_API_KEY"),
     )
@@ -132,23 +133,22 @@ class LLMs:
     async def imageToLatex(image):
         print("CALLING CLARIFAI")
         # TODO Make Clarifai API Async predict by bytes
-        nougatOcrResult = await nougatEngine.predict_by_bytes(
+        nougatOcrResult = nougatEngine.predict_by_bytes(
             input_bytes=image,
             input_type="image",
         )
         print("SUCCESSFUL")
         return nougatOcrResult.outputs[0].data.text.raw
 
-
 async def extractRawLatex(rawLatexList):
     coros = []
     for latexBundle in rawLatexList:
         coro = LLMs.promptResponse(
-            systemPrompt=LLMs.questionExtractPrompt, userPrompt=latexBundle
+            systemPrompt=LLMs.questionExtractPrompt,
+            userPrompt=latexBundle
         )
         coros.append(coro)
     return await asyncio.gather(*coros)
-
 
 async def main():
     filePath = "./assets/test/latex-test-1.pdf"
@@ -170,7 +170,6 @@ async def main():
             parsedQuestions.append(question)
 
     Debugger.printList(parsedQuestions, "Parsed Questions")
-
 
 if __name__ == "__main__":
     init_environment()
