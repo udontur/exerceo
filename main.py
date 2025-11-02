@@ -132,7 +132,8 @@ class LLMs:
 
     async def imageToLatex(image):
         print("CALLING CLARIFAI")
-        # TODO Make Clarifai API Async predict by bytes
+        # TODO: replace with deepseek-ocr when it is available on platforms.deepseek.com
+        # Reason: Mainly for the concurrency that it provides
         nougatOcrResult = nougatEngine.predict_by_bytes(
             input_bytes=image,
             input_type="image",
