@@ -3,9 +3,9 @@ import os
 # Utilities
 from dotenv import load_dotenv
 import pymupdf
-import json
 import asyncio
 import base64
+import time
 
 # AI Stuff
 import openai
@@ -48,10 +48,17 @@ class Converter:
     # Turns a image list into Latex, maps individual image to a list
     async def imagesToLatex(imageList):
         coros = []
+        # for image in imageList:
+        #     coro = LLMs.imageToLatex(imageBytes=image)
+        #     coros.append(coro)
+        # return await asyncio.gather(*coros)
+
+        # Temporary as it can only process 1 API request per second
         for image in imageList:
-            coro = LLMs.imageToLatex(imageBytes=image)
-            coros.append(coro)
-        return await asyncio.gather(*coros)
+            result = await LLMs.imageToLatex(imageBytes=image)
+            coros.append(result)
+            time.sleep(1.1)
+        return coros
 
     # Bundle k elements in the array
     def kBundle(elements, k):
@@ -67,7 +74,6 @@ class Converter:
             index += k
         return result
 
-
 class Debugger:
     @staticmethod
     def printList(elements, tag):
@@ -80,37 +86,17 @@ class Debugger:
 
 class LLMs:
     questionExtractPrompt = """
-        **Objective**: Parse and extract individual questions from practice/exam papers, ignoring non-question elements. Group multi-part questions (e.g., "a" and "b") into a single question.
+    **Objective**: Extract and structure individual questions from practice/exam papers while preserving original formatting and grouping related multi-part questions.
 
-        **Output Format**: Return a valid JSON object with the following structure:
-        ```json
-        {
-          "Questions": [
-            "Question 1 text",
-            "Question 2 text",
-            ...
-          ]
-        }
-        ```
+    **Input Processing Rules**:
+    - Extract ONLY question text and associated sub-questions
+    - Remove: Instructions, headings, page numbers, section titles, author information, copyright notices, and other contextual metadata
+    - Preserve mathematical expressions, LaTeX formatting, and special symbols exactly as written
 
-        **Rules**:
-        1. Extract only question text—ignore instructions, headings, page numbers, or other contextual content.
-        2. Preserve the original wording and formatting of questions.
-        3. Treat questions with multiple parts (e.g., "(a)" and "(b)") as a single combined question.
-        4. Maintain the order of questions as they appear in the input text.
+    **Output Rules**:
+    - Separate each complete question (including all sub-parts) with exactly two newline characters (`\n\n`)
 
-        **Example Output**:
-        ```json
-        {
-          "Questions": [
-            "What is 1+1?",
-            "How do you create an SSH key?",
-            "What is the vertical asymptote of the function f(x)=(x-2)/(x^2+3x+2)?"
-          ]
-        }
-        ```
-
-        **Input Text to Parse**:
+    **Input Text to Parse**:
     """
 
     @staticmethod
@@ -124,7 +110,7 @@ class LLMs:
         response = await genericLLMClient.chat.completions.create(
             model=os.getenv("LLM_MODEL"),
             messages=prompt,
-            response_format={"type": "json_object"},
+            # response_format={"type": "json_object"},
         )
         print("SUCCESSFUL")
         # This is a JSON formatted string
@@ -136,7 +122,6 @@ class LLMs:
         print("CALLING CLARIFAI")
 
         # TODO: replace with deepseek-ocr when it is available on platforms.deepseek.com
-        # TODO: for now, use deepseek-ocr using OpenAI SDK
         prompt = [
             {
                 "role": "user",
@@ -154,8 +139,6 @@ class LLMs:
         response = await ocrLLMClient.chat.completions.create(
             model=os.getenv("OCR_MODEL"),
             messages=prompt,
-            temperature=0.0,
-            max_tokens=2048
         )
         print("SUCCESSFUL")
         return response.choices[0].message.content
@@ -188,9 +171,10 @@ async def main():
     parsedQuestions = []
     for element in parsedLatexJsonList:
         print(element)
-        currentJson = json.loads(element)
-        for question in currentJson["Questions"]:
-            parsedQuestions.append(question)
+        parsedQuestions.extend(element.split("\n\n"))
+        # currentJson = json.loads(element)
+        # for question in currentJson["Questions"]:
+            # parsedQuestions.append(question)
 
     Debugger.printList(parsedQuestions, "Parsed Questions")
 
@@ -205,3 +189,4 @@ if __name__ == "__main__":
 # NOUGAT: MISSING PAGE POST & Sometimes it outputs random stuff like 200 \quad
 # Struggles with p11 large latex text
 # JSON have problems
+# Make this a API backend and connect to MGL's front end
