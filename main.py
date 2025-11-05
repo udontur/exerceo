@@ -5,28 +5,27 @@ from dotenv import load_dotenv
 import pymupdf
 import json
 import asyncio
+import base64
 
 # AI Stuff
-import clarifai.client.model
 import openai
 
 def init_environment():
     load_dotenv()
-    # Nougat (Clarifai)
-    global nougatEngine
-    nougatEngine = clarifai.client.model.Model(
-        url=os.getenv("NOUGAT_API_BASE"),
-        pat=os.getenv("NOUGAT_API_KEY"),
+    # DeepSeek-OCR (Clarifai)
+    global ocrLLMClient
+    ocrLLMClient = openai.AsyncOpenAI(
+        base_url=os.getenv("OCR_BASE_URL"),
+        api_key=os.getenv("OCR_API_KEY"),
     )
-    # DeepSeek
+    # DeepSeek-LLM (DeepSeek Platform)
     global genericLLMClient
     genericLLMClient = openai.AsyncOpenAI(
-        base_url=os.getenv("LLM_API_BASE"),
+        base_url=os.getenv("LLM_BASE_URL"),
         api_key=os.getenv("LLM_API_KEY"),
     )
     global pixmapScale
     pixmapScale = pymupdf.Matrix(2.5, 2.5)
-
 
 class Converter:
     @staticmethod
@@ -50,7 +49,7 @@ class Converter:
     async def imagesToLatex(imageList):
         coros = []
         for image in imageList:
-            coro = LLMs.imageToLatex(image=image)
+            coro = LLMs.imageToLatex(imageBytes=image)
             coros.append(coro)
         return await asyncio.gather(*coros)
 
@@ -121,6 +120,7 @@ class LLMs:
             {"role": "user", "content": userPrompt},
         ]
         print("CALLING DEEPSEEK")
+        # TODO: Change it to a more stable parsing structure (nojson)
         response = await genericLLMClient.chat.completions.create(
             model=os.getenv("LLM_MODEL"),
             messages=prompt,
@@ -130,16 +130,35 @@ class LLMs:
         # This is a JSON formatted string
         return response.choices[0].message.content
 
-    async def imageToLatex(image):
+    async def imageToLatex(imageBytes):
+        imageBase64 = base64.b64encode(imageBytes).decode()
+        
         print("CALLING CLARIFAI")
+
         # TODO: replace with deepseek-ocr when it is available on platforms.deepseek.com
-        # Reason: Mainly for the concurrency that it provides
-        nougatOcrResult = nougatEngine.predict_by_bytes(
-            input_bytes=image,
-            input_type="image",
+        # TODO: for now, use deepseek-ocr using OpenAI SDK
+        prompt = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "Extract all text and tables in LaTeX format."},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{imageBase64}"
+                        }
+                    }
+                ]
+            }
+        ]
+        response = await ocrLLMClient.chat.completions.create(
+            model=os.getenv("OCR_MODEL"),
+            messages=prompt,
+            temperature=0.0,
+            max_tokens=2048
         )
         print("SUCCESSFUL")
-        return nougatOcrResult.outputs[0].data.text.raw
+        return response.choices[0].message.content
 
 async def extractRawLatex(rawLatexList):
     coros = []
@@ -151,8 +170,9 @@ async def extractRawLatex(rawLatexList):
         coros.append(coro)
     return await asyncio.gather(*coros)
 
+
 async def main():
-    filePath = "./assets/test/latex-test-1.pdf"
+    filePath = "./assets/test/latex-test-1page.pdf"
     pdfImageList = Converter.pdfToImages(filePath)
     rawLatexList = await Converter.imagesToLatex(pdfImageList)
 
@@ -162,6 +182,8 @@ async def main():
     # Small bundle -> Async
     parsedLatexJsonList = await extractRawLatex(rawLatexListBundle)
 
+    # TODO: turn it into a function
+    # TODO: turn the LLM into a function
     print("PARSING")
     parsedQuestions = []
     for element in parsedLatexJsonList:
@@ -171,6 +193,7 @@ async def main():
             parsedQuestions.append(question)
 
     Debugger.printList(parsedQuestions, "Parsed Questions")
+
 
 if __name__ == "__main__":
     init_environment()
