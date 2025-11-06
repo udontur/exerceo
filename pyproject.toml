@@ -1,11 +1,10 @@
 [project]
 name = "Exerceo"
 version = "1.0.0"
-description = "Mock paper generator"
+description = "Remix your exercise and mock papers to brand new mock papers"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "clarifai>=11.9.0",
     "dotenv>=0.9.9",
     "openai>=2.6.1",
     "pymupdf>=1.26.5",
