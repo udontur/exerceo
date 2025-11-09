@@ -15,6 +15,13 @@ if __name__ == "__main__":
     Sysenv.init_environment()
     asyncio.run(main())
 
+# GTK app, distribute through flatpak only
+# Everything is located in the local folder
+# The app opens a folder that hosts the vector database (local)
 # TODO: a list -> vector embedding
-# TODO: Make this a API backend and connect to MGL's front end
+# TODO: RAG search using vector database
+# TODO: Generate new test paper with similar questions
+# TODO: Make solutions for the test paper and practice questions
+# TODO: Can input prompts and predefined prompts
+# I want to learn about APIs, servers, dockers, and hosting stuff
 # TODO: Docker and kubernets
