@@ -61,8 +61,10 @@ async def imagesToLatex(imageList):
     coros = []
     # TODO: Print how many out of how many it is doing now
     for image in imageList:
+        print("Turning image into latex")
         coro = await LLMs.imageToLatex(imageBytes=image)
         coros.append(coro)
+        print("Ok")
 
     # TODO: Temporary as it can only process 1 API request per second
     # return await asyncio.gather(*coros)

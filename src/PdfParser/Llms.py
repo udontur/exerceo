@@ -29,6 +29,7 @@ async def rawLatexToParsedLatex(rawLatex):
 
     **Input Text to Parse**:
     """
+    print("DEEPSEEk")
     prompt = [
         {"role": "system", "content": questionExtractionPrompt},
         {"role": "user", "content": rawLatex},
@@ -57,7 +58,8 @@ async def imageToLatex(imageBytes):
                 },
             ],
         }
-    ]
+    ]    
+    print("clarifai")
     return await promptResponse(
         prompt=prompt,
         llmModel="OCR_MODEL",

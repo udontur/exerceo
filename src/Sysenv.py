@@ -5,7 +5,7 @@ import pymupdf
 
 # AI
 import openai
-
+import chromadb
 
 def init_environment():
     load_dotenv()
@@ -23,7 +23,12 @@ def init_environment():
     )
     global pixmapScale
     pixmapScale = pymupdf.Matrix(2.5, 2.5)
-
+    global ragClient
+    ragClient = chromadb.Client()
+    global ragDb
+    ragDb = ragClient.create_collection(name="questionsDatabase")
+    global ragNumberOfRecords
+    ragNumberOfRecords = 0
 
 class Debugger:
     @staticmethod

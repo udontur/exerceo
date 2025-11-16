@@ -6,6 +6,7 @@ async def pdfParser(filePath):
     pdfImageList = Converter.pdfToImages(filePath)
 
     rawLatexList = await Converter.imagesToLatex(pdfImageList)
+    print("Oioioi")
     rawLatexListBundle = Converter.kBundle(rawLatexList, 3)  # >5 is very inaccurate
 
     parsedLatexList = await Converter.extractRawLatex(rawLatexListBundle)
