@@ -33,6 +33,7 @@ async def rawLatexToParsedLatex(rawLatex):
         {"role": "system", "content": questionExtractionPrompt},
         {"role": "user", "content": rawLatex},
     ]
+    print("Hi from rawLatexToParsedLatex")
     return await promptResponse(
         prompt=prompt,
         llmModel="LLM_MODEL",
@@ -56,8 +57,8 @@ async def imageToLatex(imageBytes):
                 },
             ],
         }
-    ]    
-    print("oioioi")
+    ]
+    print("Hi from imageToLatex")
     return await promptResponse(
         prompt=prompt,
         llmModel="OCR_MODEL",
