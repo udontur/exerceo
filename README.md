@@ -4,7 +4,7 @@ Remix your exercise and mock papers to brand new mock papers.
 ## Development
 You must have nix installed on your system for development.
 
-The development shell is 100% reproducable using Nix (hopefully).
+The development shell is reproducable using Nix.
 ### Start the development shell
 Run the following command:
 ```sh

@@ -45,7 +45,6 @@ def kBundle(elements, k):
         index += k
     return result
 
-# TODO: Check if the ratelimit coros work
 async def concurrentProcess(coros, item):
     result = []
     for startIndex in range(0, len(coros), Sysenv.maxConcurrentApiRequests):
