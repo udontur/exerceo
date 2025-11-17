@@ -57,6 +57,7 @@ async def imageToLatex(imageBytes):
             ],
         }
     ]    
+    print("oioioi")
     return await promptResponse(
         prompt=prompt,
         llmModel="OCR_MODEL",

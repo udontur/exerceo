@@ -45,16 +45,16 @@ def kBundle(elements, k):
         index += k
     return result
 
-# Check if the ratelimit coros work
+# TODO: Check if the ratelimit coros work
 async def concurrentProcess(coros, item):
     result = []
     for startIndex in range(0, len(coros), Sysenv.maxConcurrentApiRequests):
         endIndex=min(startIndex+ Sysenv.maxConcurrentApiRequests, len(coros))
         batch = coros[startIndex : endIndex]
 
-        print(f"[OCR] Started processing {startIndex}-{endIndex}/{len(coros)} {item}.")
+        print(f"[{item}] Started processing {startIndex}-{endIndex}/{len(coros)}")
         batchResult=await asyncio.gather(*batch)
-        print(f"[OCR] Finished processing {startIndex}-{endIndex}/{len(coros)} {item}.")
+        print(f"[{item}] Finished processing {startIndex}-{endIndex}/{len(coros)}")
 
         result.extend(batchResult)
         await asyncio.sleep(1)
@@ -75,7 +75,7 @@ async def extractRawLatex(rawLatexList):
 async def imagesToLatex(imageList):
     coros = []
     for image in imageList:
-        coro = await LLMs.imageToLatex(imageBytes=image)
+        coro = LLMs.imageToLatex(imageBytes=image)
         coros.append(coro)
 
     result = await concurrentProcess(coros, "images")

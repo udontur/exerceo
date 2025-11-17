@@ -1,3 +1,13 @@
+## Development
+### Dev shell
+The development shell is reproducable via nix-shell
+```sh
+nix-shell
+```
+### Commands
+- `run`: Run the code
+- `fl`: Format and lint the code
+
 ## Commands
 ### UV
 Initialize the project
