@@ -45,27 +45,38 @@ def kBundle(elements, k):
         index += k
     return result
 
+# Check if the ratelimit coros work
+async def concurrentProcess(coros, item):
+    result = []
+    for startIndex in range(0, len(coros), Sysenv.maxConcurrentApiRequests):
+        endIndex=min(startIndex+ Sysenv.maxConcurrentApiRequests, len(coros))
+        batch = coros[startIndex : endIndex]
 
-# TODO: add a rate limit for the coros
+        print(f"[OCR] Started processing {startIndex}-{endIndex}/{len(coros)} {item}.")
+        batchResult=await asyncio.gather(*batch)
+        print(f"[OCR] Finished processing {startIndex}-{endIndex}/{len(coros)} {item}.")
+
+        result.extend(batchResult)
+        await asyncio.sleep(1)
+
+    return result
+
+
 async def extractRawLatex(rawLatexList):
     coros = []
-    # TODO: Print how many out of how many it is doing now
     for latexBundle in rawLatexList:
         coro = LLMs.rawLatexToParsedLatex(rawLatex=latexBundle)
         coros.append(coro)
-    return await asyncio.gather(*coros)
+
+    result = await concurrentProcess(coros, "latex texts")
+    return result
 
 
-# Turns a image list into Latex, maps individual image to a list
 async def imagesToLatex(imageList):
     coros = []
-    # TODO: Print how many out of how many it is doing now
     for image in imageList:
-        print("Turning image into latex")
         coro = await LLMs.imageToLatex(imageBytes=image)
         coros.append(coro)
-        print("Ok")
 
-    # TODO: Temporary as it can only process 1 API request per second
-    # return await asyncio.gather(*coros)
-    return coros
+    result = await concurrentProcess(coros, "images")
+    return result

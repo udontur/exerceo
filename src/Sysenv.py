@@ -29,6 +29,8 @@ def init_environment():
     ragDb = ragClient.create_collection(name="questionsDatabase")
     global ragNumberOfRecords
     ragNumberOfRecords = 0
+    global maxConcurrentApiRequests
+    maxConcurrentApiRequests = 3
 
 class Debugger:
     @staticmethod
