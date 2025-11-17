@@ -29,7 +29,6 @@ async def rawLatexToParsedLatex(rawLatex):
 
     **Input Text to Parse**:
     """
-    print("DEEPSEEk")
     prompt = [
         {"role": "system", "content": questionExtractionPrompt},
         {"role": "user", "content": rawLatex},
@@ -41,7 +40,6 @@ async def rawLatexToParsedLatex(rawLatex):
     )
 
 
-# TODO: replace with deepseek-ocr when it is available on platforms.deepseek.com
 async def imageToLatex(imageBytes):
     imageBase64 = base64.b64encode(imageBytes).decode()
     prompt = [
@@ -59,7 +57,6 @@ async def imageToLatex(imageBytes):
             ],
         }
     ]    
-    print("clarifai")
     return await promptResponse(
         prompt=prompt,
         llmModel="OCR_MODEL",

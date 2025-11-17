@@ -10,6 +10,7 @@ import chromadb
 def init_environment():
     load_dotenv()
     # DeepSeek-OCR (Clarifai)
+    # TODO: use platform.deepseek.com when deepseek-ocr is available there
     global ocrLLMClient
     ocrLLMClient = openai.AsyncOpenAI(
         base_url=os.getenv("OCR_BASE_URL"),
@@ -29,6 +30,8 @@ def init_environment():
     ragDb = ragClient.create_collection(name="questionsDatabase")
     global ragNumberOfRecords
     ragNumberOfRecords = 0
+    global maxConcurrentApiRequests
+    maxConcurrentApiRequests = 3
 
 class Debugger:
     @staticmethod
