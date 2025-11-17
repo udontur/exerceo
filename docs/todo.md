@@ -1,9 +1,11 @@
 ### To do List
-- Make a GTK app through flatpak
+- Make a GTK app
+- Distribute through flatpak
 - Like obsidian, the app opens a folder that hosts everything
   - Vector database
   - Generated exercise / past papers
-  - Other stuff like env and results
+  - User's uploaded stuff
+  - Other stuff like env
 
 # TODO: A question list -> vector embedding
 # TODO: RAG search using vector database
