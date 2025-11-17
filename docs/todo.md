@@ -1,9 +1,5 @@
 ### To do List
-- Make a GTK app
-- Distribute through flatpak only
-- Docker compose
-- Docs in repo
-- I wanna make a flatpak like logo lol
+- Make a GTK app through flatpak
 - Like obsidian, the app opens a folder that hosts everything
   - Vector database
   - Generated exercise / past papers
