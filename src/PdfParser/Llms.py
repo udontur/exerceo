@@ -34,11 +34,13 @@ async def rawLatexToParsedLatex(rawLatex):
         {"role": "user", "content": rawLatex},
     ]
     print("Hi from rawLatexToParsedLatex")
-    return await promptResponse(
+    result = await promptResponse(
         prompt=prompt,
         llmModel=Settings.llmModel,
         llmClient=Settings.genericLLMClient,
     )
+    print("Bye from rawLatexToParsedLatex")
+    return result
 
 
 async def imageToLatex(imageBytes):
@@ -59,8 +61,10 @@ async def imageToLatex(imageBytes):
         }
     ]
     print("Hi from imageToLatex")
-    return await promptResponse(
+    result = await promptResponse(
         prompt=prompt,
         llmModel=Settings.ocrModel,
         llmClient=Settings.ocrLLMClient,
     )
+    print("Bye from imageToLatex")
+    return result

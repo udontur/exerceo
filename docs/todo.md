@@ -8,6 +8,7 @@
   - Other stuff like env
 
 # TODO: Refactor vector embedding code
+# TODO: fix unresponsive ocr api
 # TODO: Make a user input query the vector database
 # TODO: Make the vector DB persistent
 # TODO: RAG search (deepseek) using vector dartabase
