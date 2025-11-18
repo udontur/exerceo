@@ -1,18 +1,17 @@
-import Sysenv
+import Settings as Settings
 
 def embedQuestions(questionList):
     curIdList = []
     for i in range(len(questionList)):
-        curIdList.append(f"{Sysenv.ragNumberOfRecords+1}")
-        Sysenv.ragNumberOfRecords+=1
-    Sysenv.ragDb.add(
+        curIdList.append(f"{Settings.ragDb.count()}")
+    Settings.ragDb.add(
         ids=curIdList,
         documents=questionList,
     )
 
 def queryQuestion(question):
-    results = Sysenv.ragDb.query(
+    results = Settings.ragDb.query(
         query_texts=[question],
-        n_results=3,
+        n_results=Settings.ragNResults,
     )
     return results

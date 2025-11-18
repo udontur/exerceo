@@ -1,5 +1,5 @@
 # Local
-import Sysenv
+import Settings as Settings
 import PdfParser.main as PdfParser
 import RagEm.main as RagEm
 
@@ -8,13 +8,17 @@ import asyncio
 
 
 async def main():
-    parsedQuestions = await PdfParser.pdfParser("./assets/test/latex-test-1.pdf")
-    Sysenv.Debugger.printList(parsedQuestions, "Parsed Questions")
+    parsedQuestions = await PdfParser.pdfParser("./test/physics-test-4page.pdf")
+    Settings.Debugger.printList(parsedQuestions, "Parsed Questions")
     RagEm.embedQuestions(parsedQuestions)
-    print(RagEm.queryQuestion("Trigonometry and matrix"))
+
+    queryQuestion=input("Enter a question to query: ")
+    while queryQuestion!="q":
+        print(RagEm.queryQuestion(queryQuestion))
+        queryQuestion=input("Enter a question to query: ")
 
 if __name__ == "__main__":
-    Sysenv.init_environment()
+    Settings.init_environment()
     asyncio.run(main())
 
 

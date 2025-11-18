@@ -12,6 +12,7 @@
 # TODO: Make the vector DB persistent
 # TODO: RAG search (deepseek) using vector dartabase
 # TODO: clean up the repo structure and assets
+# Turn systenv into settings
 
 # TODO: Generate new papers with similar questions + user prompt (with full LaTeX)
 # TODO: Make solutions for the test paper and practice questions

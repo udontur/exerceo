@@ -10,6 +10,9 @@ wheels/
 .ruff_cache
 .nix
 
+# Chroma
+db/
+
 # Virtual environments
 .venv
 

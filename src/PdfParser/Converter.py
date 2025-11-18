@@ -1,5 +1,5 @@
 # Local
-import Sysenv
+import Settings as Settings
 import PdfParser.Llms as LLMs
 
 # Utilities
@@ -17,7 +17,7 @@ def pdfToImages(pdfFilePath):
 
     imageList = []
     for pdfPage in pdfDocument:
-        currentPixmap = pdfPage.get_pixmap(matrix=Sysenv.pixmapScale)
+        currentPixmap = pdfPage.get_pixmap(matrix=Settings.pixmapScale)
         currentImage = currentPixmap.pil_tobytes("JPEG")
         imageList.append(currentImage)
     pdfDocument.close()
@@ -47,8 +47,8 @@ def kBundle(elements, k):
 
 async def concurrentProcess(coros, item):
     result = []
-    for startIndex in range(0, len(coros), Sysenv.maxConcurrentApiRequests):
-        endIndex=min(startIndex+ Sysenv.maxConcurrentApiRequests, len(coros))
+    for startIndex in range(0, len(coros), Settings.maxConcurrentApiRequests):
+        endIndex=min(startIndex+ Settings.maxConcurrentApiRequests, len(coros))
         batch = coros[startIndex : endIndex]
 
         print(f"[{item}] Started processing {startIndex}-{endIndex}/{len(coros)}")

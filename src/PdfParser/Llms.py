@@ -1,5 +1,5 @@
 # Local
-import Sysenv
+import Settings as Settings
 
 # Utilities
 import os
@@ -8,7 +8,7 @@ import base64
 
 async def promptResponse(prompt, llmModel, llmClient):
     response = await llmClient.chat.completions.create(
-        model=os.getenv(llmModel),
+        model=llmModel,
         messages=prompt,
     )
     return response.choices[0].message.content
@@ -36,8 +36,8 @@ async def rawLatexToParsedLatex(rawLatex):
     print("Hi from rawLatexToParsedLatex")
     return await promptResponse(
         prompt=prompt,
-        llmModel="LLM_MODEL",
-        llmClient=Sysenv.genericLLMClient,
+        llmModel=Settings.llmModel,
+        llmClient=Settings.genericLLMClient,
     )
 
 
@@ -61,6 +61,6 @@ async def imageToLatex(imageBytes):
     print("Hi from imageToLatex")
     return await promptResponse(
         prompt=prompt,
-        llmModel="OCR_MODEL",
-        llmClient=Sysenv.ocrLLMClient,
+        llmModel=Settings.ocrModel,
+        llmClient=Settings.ocrLLMClient,
     )
