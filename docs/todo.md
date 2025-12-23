@@ -1,14 +1,19 @@
-### To do List
-- Make a GTK app
-- Distribute through flatpak
-- Like obsidian, the app opens a folder that hosts everything
-  - Vector database
-  - Generated exercise / past papers
-  - User's uploaded stuff
-  - Other stuff like env
+## Backend
+- Like obsidian, a folder that hosts everything
+- OCR model on premise
+
+## Fontend
+- A GTK app
+- Can add or remove PDFs like NotebookLM
+- Middle display the generated LaTeX paper
+- Right bar select which paper to use
+- Show how many credits you have used 
+- Distribute through flatpak with Docker and Nix
+- Connects to the backend directly (bundled togeather)
+
 
 # TODO: Refactor vector embedding code
-# TODO: fix unresponsive ocr api
+# TODO: Make OCR run on Premise
 # TODO: Make a user input query the vector database
 # TODO: Make the vector DB persistent
 # TODO: RAG search (deepseek) using vector dartabase
@@ -16,5 +21,5 @@
 # Turn systenv into settings
 
 # TODO: Generate new papers with similar questions + user prompt (with full LaTeX)
-# TODO: Make solutions for the test paper and practice questions
 # TODO: Make a docker so that every utility needed is inside of docker (so you only need docker to start developing)
+

@@ -8,7 +8,7 @@ import asyncio
 
 
 async def main():
-    parsedQuestions = await PdfParser.pdfParser("./test/physics-test-4page.pdf")
+    parsedQuestions = await PdfParser.pdfParser("./test/latex-test-1page.pdf")
     Settings.Debugger.printList(parsedQuestions, "Parsed Questions")
     RagEm.embedQuestions(parsedQuestions)
 
